@@ -9,26 +9,14 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use(bodyParser.json());
 
-require('./models/Todo');
-const Todo = mongoose.model('Todo');
-
-app.post('/api/todos', (req, res) => {
-    let newTodo = new Todo();
-    newTodo.description = req.body.description;
-    newTodo.save((err) => {
-        if(err) {
-            res.sendStatus(500)
-        } else {
-            res.sendStatus(200)
-        }
-    })
-})
-
-app.get('/api/todos', (req, res) => {
-    Todo.find({}).then((todos) => {
-        res.json(todos)
-    })
-})
+require('./models/User');
+require('./models/Product');
+const users = require('./routes/users');
+const products = require('./routes/products');
+const locations = require('./routes/locations');
+app.use('/api/users', users);
+app.use('/api/products', products);
+app.use('/api/locations', locations);
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + '/client/build/index.html'));
